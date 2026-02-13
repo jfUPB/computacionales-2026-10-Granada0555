@@ -5,7 +5,76 @@
 
 ## Bitácora de aplicación 
 
-Actividad 4 - Sistemas computacionales
+Actividad 1  - Sistemas computacionales
+
+"En esta actividad vamos a explorar el concepto del ciclo fetch-decode-execut. El siguiente programa está escrito en el lenguaje ensamblador del computador Hack. Este computador no es un computador comercial, sino un computador didáctico que te permitirá acercarte a los conceptos fundamentales de manera amigable."
+
+
+<img width="1442" height="912" alt="image" src="https://github.com/user-attachments/assets/4bf3b792-9f7c-4335-a28d-9bf541f3831c" />
+
+<img width="1232" height="746" alt="image" src="https://github.com/user-attachments/assets/65eca3e6-11dd-42e7-9d12-375ab6682353" />
+
+Toma el número 1 y lo guarda en una "caja" llamada registro D, uego toma el número 2 y lo suma con lo que ya está en esa caja (que es 1), así que ahora en la caja D hay un 3, después, guarda ese resultado (el 3) en una posición de la memoria que está en la dirección número 16. Y Finalmente, se queda en un bucle infinito, es decir, no hace nada más, solo espera ahí para que el programa no siga avanzando.
+
+
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Actividad 2
+
+"Ahora vamos a analizar juntos el siguiente programa. Este programa tendrá todos los conceptos que vamos investigar en la siguiente fase de la unidad de manera más profunda. En qué nos enfocaremos:
+
+Las partes del computador Hack.
+El modelo de programación de la CPU.
+La diferencia entre memoria RAM y registros.
+Los tipos de instrucciones del lenguaje ensamblador.
+Cómo leo el teclado y muestro en pantalla.
+Cómo implemento un bucle.
+Cómo implemento una condición.
+¿Qué es la ALU y qué operaciones realiza?"
+
+<img width="1462" height="921" alt="image" src="https://github.com/user-attachments/assets/cd9bcb1c-5bef-44f5-9b8b-fbe606b9d0f7" />
+<img width="1235" height="902" alt="image" src="https://github.com/user-attachments/assets/5c200bec-c1a3-45ae-bf21-37044706e8da" />
+<img width="1235" height="921" alt="image" src="https://github.com/user-attachments/assets/60bc2298-e307-4073-aef6-dd2e2d62dad5" />
+<img width="1244" height="898" alt="image" src="https://github.com/user-attachments/assets/592b7c64-362c-420f-974b-246c95b7e1a0" />
+<img width="1242" height="885" alt="image" src="https://github.com/user-attachments/assets/28e3d7da-bd8f-4498-b63c-2d78f5f779b8" />
+
+El computador Hack del proyecto Nand2Tetris está compuesto por una CPU, memoria RAM y dispositivos de entrada/salida como la pantalla (SCREEN) y el teclado (KBD) ; la CPU contiene la ALU, los registros A y D y el contador de programa (PC) ; el modelo de programación consiste en cargar direcciones en el registro A, realizar operaciones en el registro D y acceder a la memoria mediante M, pasando siempre los cálculos por la ALU ; la diferencia entre RAM y registros es que los registros están dentro de la CPU y son muy rápidos pero pocos, mientras que la RAM está fuera de la CPU, es más grande y almacena datos ; el lenguaje ensamblador Hack tiene solo dos tipos de instrucciones: A-instrucciones (@valor) para cargar direcciones y C-instrucciones para operaciones, asignaciones y saltos ; para leer el teclado se accede a KBD y se verifica si el valor es distinto de cero para saber si una tecla está presionada ; para mostrar en pantalla se escribe en SCREEN usando -1 para encender píxeles y 0 para apagarlos ; un bucle se implementa creando una etiqueta y usando un salto incondicional como 0;JMP para repetir el código ; una condición se implementa realizando una comparación con la ALU y usando saltos condicionales como JGT, JEQ o JNE ; la ALU es la unidad aritmético-lógica que realiza operaciones como suma, resta, negación, AND, OR y comparaciones, y además determina si se deben ejecutar saltos en el programa.
+
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Actividad 3
+
+"Escribe un programa que compare el valor almacenado en la dirección de memoria 5 con el valor 10. Si el valor es menor que 10, guarda el valor 1 en la dirección 7. Si el valor es mayor o igual a 10, guarda el valor 0 en la dirección 7."
+
+<img width="1234" height="901" alt="image" src="https://github.com/user-attachments/assets/d6421251-22f6-4cf9-a15a-38119a103ecb" />
+<img width="1448" height="911" alt="image" src="https://github.com/user-attachments/assets/4b018571-e10f-4902-a5c3-1d268b4cf8af" />
+
+@5
+D=M        // D = RAM[5]
+
+@10
+D=D-A      // D = RAM[5] - 10
+
+@MENOR
+D;JLT      // Si RAM[5] < 10 saltar a MENOR
+
+// Caso contrario (RAM[5] >= 10)
+@7
+M=0        // RAM[7] = 0
+@FIN
+0;JMP
+
+(MENOR)
+@7
+M=1        // RAM[7] = 1
+
+(FIN)
+@FIN
+0;JMP      // Bucle infinito para terminar
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Actividad 4 
 
  "Crea un programa que use un ciclo para sumar los números del 1 al 5 y guarde el resultado en la dirección de memoria 12."
 
@@ -122,4 +191,5 @@ R// La diferencia entre D=M y M=D, es:
 
 
 ## Bitácora de reflexión
+
 

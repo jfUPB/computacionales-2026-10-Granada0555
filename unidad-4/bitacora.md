@@ -1,9 +1,16 @@
-# Unidad 4
+Actividad 1 - Unidad 4
 
-## Bitácora de proceso de aprendizaje
+<img width="1125" height="507" alt="Captura de pantalla 2026-03-04 203926" src="https://github.com/user-attachments/assets/421eedc1-12ca-4878-850a-68329a8670f9" />
+Al ejecutar el programa aparece en la pantalla una escena llena de colores en movimiento y una especie de figura que se comporta como una serpiente que sigue el cursor del mouse. Esta serpiente está formada por muchos puntos conectados entre sí que se mueven de manera suave, dando la sensación de que todo fluye. Detrás de este efecto visual hay una estructura de datos llamada lista enlazada, que se utiliza para guardar la posición de cada uno de esos puntos. Gracias a esta lista, el programa puede manejar fácilmente todos los segmentos de la serpiente y hacer que se muevan juntos.
 
+<img width="1068" height="266" alt="Captura de pantalla 2026-03-04 204743" src="https://github.com/user-attachments/assets/1635a31b-52c0-449e-a8cf-39dc943a8a69" />
+Cuando el programa comienza, la función setup() se encarga de preparar todo para que la animación funcione. Primero se define el color inicial del fondo y luego se crean varios puntos que formarán la serpiente. Todos esos puntos se colocan al principio en el centro de la pantalla, por lo que al inicio parece que están todos superpuestos. Se crean alrededor de veinte puntos, y cada uno se guarda dentro de la lista. Estos puntos serán los que después se moverán para formar la serpiente que se ve en pantalla.
 
-## Bitácora de aplicación 
+<img width="1021" height="614" alt="Captura de pantalla 2026-03-04 204352" src="https://github.com/user-attachments/assets/439b4b24-baf0-47fd-adb3-7e2d74e08bbf" />
+<img width="1186" height="572" alt="Captura de pantalla 2026-03-04 204227" src="https://github.com/user-attachments/assets/e477cbaa-4c95-4c30-bc43-4958ce1837d2" />
+Después entra en funcionamiento la parte más importante, que es la función update(). Aquí el programa toma la posición actual del mouse y la usa como objetivo. El primer punto de la serpiente se mueve poco a poco hacia el cursor, y luego cada punto siguiente se mueve hacia el punto que tiene delante. Esto hace que todos los segmentos se sigan entre sí y que el movimiento se vea natural, como si fuera una serpiente real desplazándose. Al mismo tiempo, el programa también va cambiando poco a poco el color del fondo, lo que produce ese efecto de gradiente que cambia constantemente.
 
-
-## Bitácora de reflexión
+Luego, en la función draw(), todo lo que se calculó se dibuja en la pantalla. Primero aparece un fondo con un degradado de colores que cambia con el tiempo. Después se dibuja una línea que conecta todos los puntos de la serpiente, formando una curva suave. Finalmente se dibujan círculos en cada punto. Estos círculos cambian de tamaño y de color dependiendo de su posición en la serpiente, lo que hace que el efecto visual sea más interesante y que la figura resalte sobre el fondo.
+<img width="1917" height="1141" alt="Captura de pantalla 2026-03-04 171211" src="https://github.com/user-attachments/assets/40c3dc65-2d89-4818-a36e-7b36a17685d9" />
+<img width="1919" height="1129" alt="Captura de pantalla 2026-03-04 170329" src="https://github.com/user-attachments/assets/bc3ac4a7-0044-4c24-b1c6-a24827c7581a" />
+Además, el programa permite interactuar usando algunas teclas. Si se presiona “c”, todos los puntos de la serpiente se eliminan y la figura desaparece. Si se presiona “a”, se agrega un nuevo punto en una posición aleatoria de la pantalla, haciendo que la serpiente crezca. Con la tecla “r” se elimina el último punto, reduciendo su tamaño. Y si se presiona “s”, el programa guarda una captura de pantalla del momento actual. Estas acciones permiten experimentar con la serpiente y ver cómo cambia su forma mientras se mueve por la pantalla.

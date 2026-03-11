@@ -388,8 +388,11 @@ El programa también incluye interacción mediante el teclado. Cuando el usuario
 <img width="1836" height="1131" alt="Captura de pantalla 2026-03-11 151913" src="https://github.com/user-attachments/assets/62931356-a3f3-4d0f-b33e-389b14747298" />
 
 Durante el proceso de depuración se utilizaron breakpoints para observar el comportamiento de la cola en diferentes situaciones. En la primera evidencia se detuvo la ejecución durante la inserción del primer nodo en una cola vacía, observando cómo los punteros front y rear apuntaban al mismo nodo y cómo la variable size cambiaba de cero a uno. En la segunda evidencia se insertaron múltiples nodos y se verificó que el orden de los elementos se mantenía correctamente, demostrando que los nodos se agregaban siempre al final de la estructura. En la tercera evidencia se analizó la función dequeue, observando cómo el puntero front se movía al siguiente nodo y cómo el nodo anterior era eliminado de la memoria con delete, lo que confirma que no se generan fugas de memoria. En la cuarta evidencia se verificó el control del tamaño máximo de la cola, observando cómo al superar maxSize se ejecutaba automáticamente la eliminación del nodo más antiguo. En la quinta evidencia se analizó el recorrido de la cola durante la función draw, confirmando que el programa puede recorrer todos los nodos sin alterar la estructura original. Finalmente, en la sexta evidencia se ejecutó la función clear, comprobando que todos los nodos eran eliminados y que los punteros de la cola volvían a su estado inicial.
+<img width="1482" height="1117" alt="image" src="https://github.com/user-attachments/assets/11f88632-8a98-4015-be4a-8692731d0a74" />
+
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------------ 
+
 
 
 

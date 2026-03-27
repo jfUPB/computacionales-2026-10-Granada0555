@@ -482,9 +482,9 @@ En el método update() del programa se recorre un vector de Particle* y se llama
 En las clases se usan atributos protegidos (protected), lo que permite que las subclases accedan a ellos. Por ejemplo, variables como position o velocity pueden ser utilizadas directamente en las clases hijas, ademas si estas variables fueran privadas (private), no podrían ser accedidas desde las subclases. En el depurador también se puede observar qué atributos pertenecen a cada clase, lo que ayuda a entender cómo se organiza el acceso a los datos.
 
 
-
-
-https://github.com/user-attachments/assets/e75866bb-5c84-4fde-8edd-04ac4c355e80
+https://github.com/user-attachments/assets/3ba425cf-ef3d-4ba3-aa71-bf6c593c8218
 
 
 El ciclo de vida de una partícula es claro: Primero se crea y se agrega al vector. Luego se actualiza en cada frame usando el método update(). Cuando cumple ciertas condiciones, como el tiempo de vida o la altura, la partícula explota. Finalmente, se elimina del vector y se libera la memoria usando delete. Esto muestra que el objeto pasa por todas sus etapas correctamente. (Anexare un video para que se vea mucho mejor)
+Cuando una partícula deja de ser necesaria, se elimina usando delete y luego se remueve del vector con erase. Esto asegura que la memoria utilizada por el objeto se libera correctamente y evita fugas de memoria.
+Se probó el programa creando muchas partículas al mismo tiempo, por ejemplo al presionar la barra espaciadora. El programa sigue funcionando correctamente, las partículas se actualizan, explotan y se eliminan sin errores. Esto demuestra que el sistema puede manejar una gran cantidad de objetos sin fallar.

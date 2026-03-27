@@ -41,3 +41,36 @@ El método draw() recorre todas las partículas y las dibuja en pantalla. La fun
 
 
 En conjunto, este programa demuestra el uso de herencia, ya que todas las partículas derivan de una clase base; polimorfismo, porque todas las partículas se manejan mediante el mismo tipo pero ejecutan comportamientos diferentes; y encapsulamiento, porque cada clase administra sus propios datos internos. También se evidencia el uso de estructuras dinámicas como std::vector y el manejo manual de memoria con new y delete.
+
+<img width="1425" height="933" alt="image" src="https://github.com/user-attachments/assets/67f3ed29-fa93-494c-8900-5f003cc7a125" />
+
+ACTIVIDAD 3 ---------------------
+
+(Modificando un poco el codigo de ofApp,cpp y ofApp.h)
+
+Antes de ejecutar el programa, esperaba que un objeto en memoria fuera simplemente un conjunto de datos organizados, como sus atributos (pos, life, etc.). También pensaba que cada objeto tendría sus propias funciones almacenadas directamente dentro de él.
+
+<img width="1905" height="541" alt="image" src="https://github.com/user-attachments/assets/65f1bede-61d3-478c-b556-5baf56243b95" />
+
+Observación del objeto ofApp: Al ejecutar el programa y usar el depurador, encontré el objeto ofApp a través de this en la ventana Locals. Se pudo observar que: Contiene un vector llamado particles, Este vector almacena punteros a objetos, no los objetos directamente
+
+Observación de CircularExplosion: Al inspeccionar un objeto de tipo CircularExplosion, se observó que en memoria contiene: Primero: un puntero oculto (_vtable o _vptr), Luego: sus atributos (pos, life)
+
+<img width="900" height="473" alt="image" src="https://github.com/user-attachments/assets/7ad4682d-6f2f-4bc8-933c-329b92600991" />
+
+Se analizó cómo está construido el objeto en memoria y se observó que CircularExplosion hereda de Particle. Al inspeccionarlo en el depurador, se puede ver que primero aparece en memoria la parte correspondiente a la clase base (Particle) y después los atributos propios de CircularExplosion, como la posición y el tiempo de vida. Esto permite concluir que los objetos derivados contienen internamente la información de la clase base como primera parte, lo cual explica cómo funciona la herencia a nivel de memoria en C++. Al observar el objeto en el depurador también se encontró que el primer valor en memoria no es un atributo como tal, sino un puntero a la tabla de funciones virtuales, conocido como _vtable (o _vptr). Esta tabla contiene las direcciones de memoria de las funciones virtuales, como update, draw e isDead.
+
+Cuando se compararon objetos de tipo CircularExplosion y StarExplosion, se vio que ambos tienen una _vtable, pero no apuntan al mismo lugar. Cada uno tiene su propia tabla con direcciones distintas, ya que cada clase implementa sus propias versiones de los métodos virtuales. Esto es importante porque permite que, aunque ambos objetos se manejen como Particle*, el programa sepa cuál función debe ejecutar en cada caso. A partir de esto se concluye que la _vtable permite que el programa decida en tiempo de ejecución qué método llamar dependiendo del tipo real del objeto. Esto es lo que se conoce como polimorfismo.
+
+Esto se puede relacionar con el ejemplo visto en C#, donde se utiliza una interfaz IAnimal. En ese caso, tanto Perro como Gato se manejan como IAnimal, pero cada uno ejecuta su propio método HacerSonido. En C++ ocurre algo similar: todos los objetos se almacenan como Particle*, pero cada uno ejecuta su propio draw() gracias a la _vtable.
+
+La tabla de funciones virtuales sirve entonces para permitir el polimorfismo, ejecutar el método correcto según el tipo real del objeto y evitar el uso de múltiples condicionales para diferenciar comportamientos.
+
+<img width="544" height="585" alt="image" src="https://github.com/user-attachments/assets/d0baf09e-64d6-43a2-9af1-178461777737" />
+<img width="458" height="583" alt="image" src="https://github.com/user-attachments/assets/986f16c5-9bdc-455a-909a-a171bddb6087" />
+
+
+El código tuvo que modificarse ligeramente para poder cumplir con la actividad y facilitar el análisis en el depurador. Se creó una clase base Particle con métodos virtuales, y a partir de esta se definieron las clases CircularExplosion y StarExplosion. También se utilizó un vector<Particle*> para poder almacenar diferentes tipos de objetos bajo un mismo tipo base, aplicando así el polimorfismo. Además, se añadieron objetos tanto en el método setup() como mediante interacción con el mouse, para asegurar que existieran instancias en memoria que pudieran ser inspeccionadas durante la ejecución.
+
+
+ACTIVVIDAD 4 --------------------------

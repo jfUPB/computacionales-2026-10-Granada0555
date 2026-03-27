@@ -117,3 +117,374 @@ Este comportamiento corresponde al polimorfismo en tiempo de ejecución. Interna
 
 ACTIVIDAD 6  ----------------------------
 
+
+ofApp.h //////////////////////////////////////////////////////////////
+#pragma once
+#include "ofMain.h"
+#include <vector>
+
+// -------------------- Clase base --------------------
+class Particle {
+public:
+    virtual ~Particle() {}
+    virtual void update(float dt) = 0;
+    virtual void draw() = 0;
+    virtual bool isDead() const = 0;
+    virtual bool shouldExplode() const { return false; }
+    virtual glm::vec2 getPosition() const { return glm::vec2(0, 0); }
+    virtual ofColor getColor() const { return ofColor(255); }
+};
+
+// -------------------- RisingParticle --------------------
+class RisingParticle : public Particle {
+protected:
+    glm::vec2 position;
+    glm::vec2 velocity;
+    ofColor color;
+    float lifetime;
+    float age;
+    bool exploded;
+
+public:
+    RisingParticle(const glm::vec2& pos, const glm::vec2& vel,
+                   const ofColor& col, float life)
+        : position(pos), velocity(vel), color(col),
+          lifetime(life), age(0), exploded(false) {}
+
+    void update(float dt) override {
+        position += velocity * dt;
+        age += dt;
+        velocity.y += 9.8f * dt * 8;
+
+        float explosionThreshold = ofGetHeight() * 0.15f + ofRandom(-30, 30);
+        if (position.y <= explosionThreshold || age >= lifetime) {
+            exploded = true;
+        }
+    }
+
+    void draw() override {
+        ofSetColor(color);
+        ofDrawCircle(position, 10);
+    }
+
+    bool isDead() const override { return exploded; }
+    bool shouldExplode() const override { return exploded; }
+    glm::vec2 getPosition() const override { return position; }
+    ofColor getColor() const override { return color; }
+};
+
+// -------------------- NUEVA 1: ZigZagParticle --------------------
+class ZigZagParticle : public RisingParticle {
+public:
+    ZigZagParticle(const glm::vec2& pos, const glm::vec2& vel,
+                   const ofColor& col, float life)
+        : RisingParticle(pos, vel, col, life) {}
+
+    void update(float dt) override {
+        position += velocity * dt;
+        age += dt;
+
+        // Movimiento en zigzag
+        position.x += sin(age * 10) * 5;
+
+        velocity.y += 9.8f * dt * 8;
+
+        if (age >= lifetime) {
+            exploded = true;
+        }
+    }
+
+    void draw() override {
+        ofSetColor(color);
+        ofDrawRectangle(position.x, position.y, 8, 8);
+    }
+};
+
+// -------------------- NUEVA 2: SpiralParticle --------------------
+class SpiralParticle : public RisingParticle {
+public:
+    SpiralParticle(const glm::vec2& pos, const glm::vec2& vel,
+                   const ofColor& col, float life)
+        : RisingParticle(pos, vel, col, life) {}
+
+    void update(float dt) override {
+        age += dt;
+
+        float angle = age * 5;
+        position.x += cos(angle) * 4;
+        position.y += velocity.y * dt;
+
+        if (age >= lifetime) {
+            exploded = true;
+        }
+    }
+
+    void draw() override {
+        ofSetColor(color);
+        ofDrawCircle(position, 6);
+    }
+};
+
+// -------------------- Explosion base --------------------
+class ExplosionParticle : public Particle {
+protected:
+    glm::vec2 position;
+    glm::vec2 velocity;
+    ofColor color;
+    float age;
+    float lifetime;
+    float size;
+
+public:
+    ExplosionParticle(const glm::vec2& pos, const glm::vec2& vel,
+                      const ofColor& col, float life, float sz)
+        : position(pos), velocity(vel), color(col),
+          age(0), lifetime(life), size(sz) {}
+
+    void update(float dt) override {
+        position += velocity * dt;
+        age += dt;
+        float alpha = ofMap(age, 0, lifetime, 255, 0, true);
+        color.a = alpha;
+    }
+
+    bool isDead() const override { return age >= lifetime; }
+};
+
+// -------------------- Tipos existentes --------------------
+class CircularExplosion : public ExplosionParticle {
+public:
+    CircularExplosion(const glm::vec2& pos, const ofColor& col)
+        : ExplosionParticle(pos, glm::vec2(0, 0), col, 1.2f, ofRandom(16, 32)) {
+        float angle = ofRandom(0, TWO_PI);
+        float speed = ofRandom(80, 200);
+        velocity = glm::vec2(cos(angle), sin(angle)) * speed;
+    }
+
+    void draw() override {
+        ofSetColor(color);
+        ofDrawCircle(position, size);
+    }
+};
+
+class RandomExplosion : public ExplosionParticle {
+public:
+    RandomExplosion(const glm::vec2& pos, const ofColor& col)
+        : ExplosionParticle(pos, glm::vec2(0, 0), col, 1.5f, ofRandom(16, 32)) {
+        velocity = glm::vec2(ofRandom(-200, 200), ofRandom(-200, 200));
+    }
+
+    void draw() override {
+        ofSetColor(color);
+        ofDrawRectangle(position.x, position.y, size, size);
+    }
+};
+
+class StarExplosion : public ExplosionParticle {
+public:
+    StarExplosion(const glm::vec2& pos, const ofColor& col)
+        : ExplosionParticle(pos, glm::vec2(0, 0), col, 1.3f, ofRandom(20, 40)) {
+        float angle = ofRandom(0, TWO_PI);
+        float speed = ofRandom(90, 180);
+        velocity = glm::vec2(cos(angle), sin(angle)) * speed;
+    }
+
+    void draw() override {
+        ofSetColor(color);
+        ofDrawCircle(position, size);
+    }
+};
+
+// -------------------- NUEVA EXPLOSIÓN --------------------
+class ChaosExplosion : public ExplosionParticle {
+public:
+    ChaosExplosion(const glm::vec2& pos, const ofColor& col)
+        : ExplosionParticle(pos, glm::vec2(0, 0), col, 1.5f, ofRandom(10, 30)) {
+        velocity = glm::vec2(ofRandom(-300, 300), ofRandom(-300, 300));
+    }
+
+    void draw() override {
+        ofSetColor(color);
+
+        int shape = (int)ofRandom(3);
+        if (shape == 0) {
+            ofDrawCircle(position, size);
+        } else if (shape == 1) {
+            ofDrawRectangle(position.x, position.y, size, size);
+        } else {
+            ofDrawTriangle(position,
+                           position + glm::vec2(size, 0),
+                           position + glm::vec2(0, size));
+        }
+    }
+};
+
+// -------------------- ofApp --------------------
+class ofApp : public ofBaseApp {
+public:
+    void setup();
+    void update();
+    void draw();
+    void mousePressed(int x, int y, int button);
+    void keyPressed(int key);
+
+    std::vector<Particle*> particles;
+    ~ofApp();
+
+private:
+    void createRisingParticle();
+};
+////////////////////////////////////////////////////////////
+
+ofApp.cpp     /////////////////////////////////////////////////
+
+#include "ofApp.h"
+
+void ofApp::setup() {
+    ofSetFrameRate(60);
+    ofBackground(0);
+}
+
+void ofApp::update() {
+    float dt = ofGetLastFrameTime();
+
+    for (int i = 0; i < particles.size(); i++) {
+        particles[i]->update(dt);
+    }
+
+    for (int i = particles.size() - 1; i >= 0; i--) {
+
+        if (particles[i]->shouldExplode()) {
+
+            int explosionType = (int)ofRandom(4);
+            int numParticles = (int)ofRandom(30, 60);
+
+            for (int j = 0; j < numParticles; j++) {
+
+                if (explosionType == 0) {
+                    particles.push_back(new CircularExplosion(
+                        particles[i]->getPosition(), particles[i]->getColor()));
+
+                } else if (explosionType == 1) {
+                    particles.push_back(new RandomExplosion(
+                        particles[i]->getPosition(), particles[i]->getColor()));
+
+                } else if (explosionType == 2) {
+                    particles.push_back(new StarExplosion(
+                        particles[i]->getPosition(), particles[i]->getColor()));
+
+                } else {
+                    particles.push_back(new ChaosExplosion(
+                        particles[i]->getPosition(), particles[i]->getColor()));
+                }
+            }
+
+            delete particles[i];
+            particles.erase(particles.begin() + i);
+
+        } else if (particles[i]->isDead()) {
+            delete particles[i];
+            particles.erase(particles.begin() + i);
+        }
+    }
+}
+
+void ofApp::draw() {
+    for (int i = 0; i < particles.size(); i++) {
+        particles[i]->draw();
+    }
+}
+
+void ofApp::createRisingParticle() {
+
+    float minX = ofGetWidth() * 0.35f;
+    float maxX = ofGetWidth() * 0.65f;
+
+    glm::vec2 pos(ofRandom(minX, maxX), ofGetHeight());
+
+    glm::vec2 target(ofGetWidth() / 2 + ofRandom(-300, 300),
+                     ofGetHeight() * 0.1f);
+
+    glm::vec2 dir = glm::normalize(target - pos);
+    glm::vec2 vel = dir * ofRandom(250, 350);
+
+    ofColor col;
+    col.setHsb(ofRandom(255), 220, 255);
+
+    float life = ofRandom(1.5f, 3.5f);
+
+    int type = (int)ofRandom(3);
+
+    if (type == 0) {
+        particles.push_back(new RisingParticle(pos, vel, col, life));
+    } else if (type == 1) {
+        particles.push_back(new ZigZagParticle(pos, vel, col, life));
+    } else {
+        particles.push_back(new SpiralParticle(pos, vel, col, life));
+    }
+}
+
+void ofApp::mousePressed(int x, int y, int button) {
+    createRisingParticle();
+}
+
+void ofApp::keyPressed(int key) {
+    if (key == ' ') {
+        for (int i = 0; i < 300; i++) {
+            createRisingParticle();
+        }
+    }
+}
+
+ofApp::~ofApp() {
+    for (int i = 0; i < particles.size(); i++) {
+        delete particles[i];
+    }
+    particles.clear();
+}
+
+///////////////////////////////////////////////////////////////////////////
+
+El programa está organizado usando programación orientada a objetos. Existe una clase base llamada Particle, de la cual se derivan otros tipos de partículas.
+
+
+<img width="1836" height="854" alt="image" src="https://github.com/user-attachments/assets/fc8173d2-06d6-4c7f-962e-3fbeb9f655ce" />
+
+<img width="974" height="736" alt="image" src="https://github.com/user-attachments/assets/4fa73754-b85a-4b2e-b834-106ac835717e" />
+
+
+Por un lado está RisingParticle, que representa las partículas que suben desde la parte inferior de la pantalla y luego explotan. Por otro lado está ExplosionParticle, que sirve como base para las partículas que aparecen después de la explosión. A partir de estas clases base se crean distintos comportamientos usando herencia.
+
+En cuanto a las modificaciones realizadas, se agregaron dos nuevos tipos de partículas:
+ - ZigZagParticle, que se mueve en forma de zigzag modificando su posición en el eje X usando una función seno.
+ - SpiralParticle, que tiene un movimiento más circular, simulando una especie de espiral.
+
+También se agregó un nuevo tipo de explosión llamado ChaosExplosion, que genera partículas con direcciones completamente aleatorias y además dibuja distintas formas como círculos, rectángulos y triángulos. Adicionalmente, se hizo que el sistema fuera más aleatorio en general. Ahora el tipo de partícula que se crea, el tipo de explosión, la cantidad de partículas generadas y hasta las formas que se dibujan cambian de manera aleatoria. Esto hace que la simulación sea más variada sin modificar demasiado la estructura original del programa.
+
+
+<img width="1906" height="734" alt="image" src="https://github.com/user-attachments/assets/f670773d-bbb2-4a28-8e69-82d0d32215c4" />
+
+
+Al inspeccionar una partícula como ZigZagParticle en el depurador, se puede ver cómo están organizados los datos en memoria. Primero aparecen los atributos de la clase base Particle, luego los de RisingParticle y finalmente los propios de ZigZagParticle.Esto muestra que en C++ la herencia se implementa organizando los datos de forma secuencial, donde la subclase contiene internamente a sus clases base.
+
+
+<img width="1885" height="877" alt="image" src="https://github.com/user-attachments/assets/aa3daa72-c5b4-42b8-9234-a1e103ea0ca8" />
+
+Las clases que tienen métodos virtuales utilizan una tabla llamada _vtable. Esta tabla guarda referencias a las funciones que cada objeto debe ejecutar.
+Al comparar dos clases como CircularExplosion y ChaosExplosion, se observa que ambas comparten algunas funciones heredadas, pero tienen implementaciones distintas en métodos como draw(). Esto demuestra que cada clase tiene su propia _vtable, y que esta cambia dependiendo de las funciones que la clase sobrescribe.
+
+<img width="1850" height="848" alt="image" src="https://github.com/user-attachments/assets/142d5c6e-9027-4c71-bc6f-3b38f923a83e" />
+
+En el método update() del programa se recorre un vector de Particle* y se llama a update(dt) sin importar el tipo real de cada objeto, aun así, cada partícula ejecuta su propio comportamiento. Por ejemplo, ZigZagParticle se mueve en zigzag y SpiralParticle se mueve en forma circular. Esto ocurre porque el programa decide qué función ejecutar en tiempo de ejecución, lo cual es el polimorfismo.
+
+<img width="1300" height="204" alt="image" src="https://github.com/user-attachments/assets/feff2eb9-9066-4f47-8e7e-80ba7e276837" />
+
+En las clases se usan atributos protegidos (protected), lo que permite que las subclases accedan a ellos. Por ejemplo, variables como position o velocity pueden ser utilizadas directamente en las clases hijas, ademas si estas variables fueran privadas (private), no podrían ser accedidas desde las subclases. En el depurador también se puede observar qué atributos pertenecen a cada clase, lo que ayuda a entender cómo se organiza el acceso a los datos.
+
+
+
+
+https://github.com/user-attachments/assets/e75866bb-5c84-4fde-8edd-04ac4c355e80
+
+
+El ciclo de vida de una partícula es claro: Primero se crea y se agrega al vector. Luego se actualiza en cada frame usando el método update(). Cuando cumple ciertas condiciones, como el tiempo de vida o la altura, la partícula explota. Finalmente, se elimina del vector y se libera la memoria usando delete. Esto muestra que el objeto pasa por todas sus etapas correctamente. (Anexare un video para que se vea mucho mejor)

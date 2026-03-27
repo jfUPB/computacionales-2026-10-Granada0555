@@ -74,3 +74,46 @@ El código tuvo que modificarse ligeramente para poder cumplir con la actividad 
 
 
 ACTIVVIDAD 4 --------------------------
+
+<img width="1192" height="608" alt="image" src="https://github.com/user-attachments/assets/8589c8ec-ab4d-4a30-8022-6f96ed940daf" />
+
+Primero se probó el código de la clase AccessControl, que tiene variables private, protected y public. Al ejecutar el programa con solo la línea ac.publicVar = 10, no ocurrió nada visible en consola. Esto es normal, ya que el programa no tiene ningún cout o impresión, simplemente se ejecuta y termina sin mostrar resultados. Sin embargo, al descomentar las líneas:
+
+ac.protectedVar = 20;
+ac.privateVar = 30;
+
+el programa ya no compila. El compilador muestra errores indicando que no se puede acceder a esos miembros. Esto sucede porque protected y private restringen el acceso desde fuera de la clase. En el caso de protected, solo se puede acceder desde clases derivadas, y en el caso de private, únicamente desde la misma clase. De esto se concluye que los modificadores de acceso en C++ sí controlan quién puede acceder a los datos, pero lo hacen en tiempo de compilación, evitando que el código incorrecto siquiera se ejecute.
+
+<img width="1469" height="253" alt="image" src="https://github.com/user-attachments/assets/af02ee0c-f0b0-46f4-9a28-1c5b4b7db98e" />
+
+Luego se probó el segundo programa con la clase MyClass. Al intentar acceder directamente a obj.secret1, el compilador también genera un error, ya que ese atributo es privado. Esto confirma nuevamente que el encapsulamiento impide el acceso directo desde fuera de la clase mientras se está compilando el programa.
+
+<img width="1227" height="635" alt="image" src="https://github.com/user-attachments/assets/b780e8e1-ce56-4e75-b375-ec7e65d7b347" />
+
+Después se utilizó el tercer código, donde se emplea reinterpret_cast para acceder directamente a la memoria del objeto. En este caso, el programa sí compila y se ejecuta correctamente, mostrando los valores de secret1, secret2 y secret3, a pesar de que son privados.
+Esto ocurre porque en tiempo de ejecución la memoria no “recuerda” los modificadores de acceso. El objeto simplemente es un bloque de memoria contigua, y al usar punteros se puede acceder directamente a esos valores, ignorando completamente el encapsulamiento. A partir de esto se puede concluir que el encapsulamiento en C++ no es una protección absoluta en tiempo de ejecución, sino una regla que el compilador hace cumplir durante la compilación. Es decir, sirve para organizar y proteger el código a nivel de diseño, pero no impide que alguien con conocimiento técnico acceda a la memoria directamente.
+
+En pocas palabras, el encapsulamiento es una forma de controlar el acceso a los datos de una clase, definiendo qué se puede usar desde afuera y qué no. Es importante porque ayuda a evitar errores, protege la integridad de los datos y hace que el código sea más ordenado y mantenible.
+
+ACTIVIDAD 5 -----------------------------
+
+(Utilizando los codigos de la actividad 2 de referencia )
+
+<img width="947" height="163" alt="image" src="https://github.com/user-attachments/assets/39a24cc6-dea0-478a-8bad-a4237077a0a4" />
+
+Al analizar un objeto de tipo CircularExplosion en el depurador, se puede observar cómo la memoria refleja directamente la jerarquía de herencia. En este caso, CircularExplosion hereda de ExplosionParticle, y esta a su vez hereda de Particle, ademas cuando, se inspecciona el objeto en memoria, se nota que no está dividido en partes separadas, sino que todo se encuentra en un solo bloque continuo. Primero aparecen los elementos correspondientes a la clase base Particle, luego los de ExplosionParticle y finalmente los de CircularExplosion. Esto indica que C++ organiza los objetos heredados colocando primero la base y luego las clases derivadas dentro del mismo espacio de memoria, aunque la clase Particle no tiene atributos propios, sí contiene métodos virtuales, por lo que el objeto incluye un puntero interno llamado _vptr, que apunta a la tabla de funciones virtuales (_vtable). Por otro lado, los atributos reales que ocupan espacio en memoria provienen principalmente de ExplosionParticle, como la posición, la velocidad, el color, la edad, el tiempo de vida y el tamaño. A partir de esto, se puede concluir que la herencia en C++ se implementa de forma secuencial en memoria, lo que permite que un puntero de tipo Particle* pueda apuntar a cualquier objeto derivado sin problemas, ya que la parte base siempre está al inicio del objeto.
+
+<img width="1880" height="788" alt="image" src="https://github.com/user-attachments/assets/92aed57d-debf-4327-ba4e-368ad021bcc7" />
+
+Al analizar un objeto de tipo CircularExplosion en el depurador, se puede observar cómo la memoria refleja directamente la jerarquía de herencia. En este caso, CircularExplosion hereda de ExplosionParticle, y esta a su vez hereda de Particle. Cuando se inspecciona el objeto en memoria, se nota que no está dividido en partes separadas, sino que todo se encuentra en un solo bloque continuo. Primero aparecen los elementos correspondientes a la clase base Particle, luego los de ExplosionParticle y finalmente los de CircularExplosion. Esto indica que C++ organiza los objetos heredados colocando primero la base y luego las clases derivadas dentro del mismo espacio de memoria.
+
+Aunque la clase Particle no tiene atributos propios, sí contiene métodos virtuales, por lo que el objeto incluye un puntero interno llamado _vptr, que apunta a la tabla de funciones virtuales (_vtable). Por otro lado, los atributos reales que ocupan espacio en memoria provienen principalmente de ExplosionParticle, como la posición, la velocidad, el color, la edad, el tiempo de vida y el tamaño. A partir de esto, se puede concluir que la herencia en C++ se implementa de forma secuencial en memoria, lo que permite que un puntero de tipo Particle* pueda apuntar a cualquier objeto derivado sin problemas, ya que la parte base siempre está al inicio del objeto.
+
+
+<img width="1883" height="941" alt="image" src="https://github.com/user-attachments/assets/14650369-9c2e-4c81-bf72-7fa9beae106c" />
+
+Este comportamiento corresponde al polimorfismo en tiempo de ejecución. Internamente, esto funciona gracias a los métodos virtuales y a la tabla de funciones virtuales. Cada objeto contiene un puntero a su _vtable, que almacena las direcciones de las funciones correspondientes a su tipo real. Cuando se llama a update() a través de un puntero Particle*, el programa consulta esa tabla y ejecuta la versión correcta del método según el tipo del objeto. Esto significa que, aunque el código sea el mismo, el comportamiento cambia dependiendo del objeto que se esté utilizando. En otras palabras, el polimorfismo permite tratar diferentes tipos de objetos como si fueran uno solo, manteniendo comportamientos distintos.
+
+
+ACTIVIDAD 6  ----------------------------
+

@@ -125,7 +125,11 @@ Por esta razón, se consideró más adecuado que herede directamente de State, d
 Durante la ejecución, se colocó un breakpoint en setState. Al presionar la tecla 'p', se observó que el puntero newState apunta a una instancia de PulseState. se verificó que el puntero state de la partícula cambia a una dirección de memoria correspondiente a un objeto de tipo PulseState. Además, al continuar la ejecución, se comprobó que el método update ejecutado corresponde al de PulseState, ya que la partícula comienza a cambiar de tamaño de forma periódica, lo cual no ocurre en otros estados. Finalmente esta decisión permite mantener un diseño más claro y modular, ya que cada estado define su propio comportamiento sin depender de otros. Si PulseState heredara de otro estado, se introduciría un acoplamiento innecesario y se podrían heredar comportamientos no deseados.
 Al heredar directamente de State, se garantiza que el nuevo estado sea independiente, fácil de entender y de mantener, lo cual es consistente con el objetivo del patrón State.
 
+<img width="1894" height="1098" alt="image" src="https://github.com/user-attachments/assets/b412bfd9-a2eb-4b96-a28e-ca85edeff5db" />
 
+<img width="1860" height="1046" alt="Captura de pantalla 2026-04-16 230916" src="https://github.com/user-attachments/assets/931cf4d3-ad18-4717-a9db-17d43414a104" />
+
+Vemos que al presionar "p" nuestra nueva particula cambia de color, velocidad y pasa cambiando de tamaño entre mas grande y pequeño
 
 
 

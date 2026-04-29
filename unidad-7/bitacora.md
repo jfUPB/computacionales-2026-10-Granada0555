@@ -156,5 +156,191 @@ De esta forma, el triángulo se mueve en la ventana siguiendo el mouse, porque e
 - Relación con el sistema de coordenadas de OpenGL
 El sistema de coordenadas de OpenGL (NDC) es el espacio donde todo se dibuja antes de proyectarse en la pantalla. Al normalizar las coordenadas del mouse y transformarlas a NDC, logro que el triángulo se desplace de manera coherente dentro de la ventana. Es como traducir de “idioma píxeles” al “idioma OpenGL”.
 
+---------------------- ACTIVIDAD 6 --------------------------------------
+
+Fase 1 -------------------
+
+<img width="1891" height="1084" alt="Captura de pantalla 2026-04-28 233144" src="https://github.com/user-attachments/assets/9e19aee0-6be9-4503-85de-f4e25d5191a6" />
+<img width="1335" height="480" alt="Captura de pantalla 2026-04-28 233129" src="https://github.com/user-attachments/assets/8ba0655a-5e25-4c01-a3c7-5427a871dbec" />
+<img width="1900" height="1110" alt="Captura de pantalla 2026-04-28 233150" src="https://github.com/user-attachments/assets/96bb85c0-4198-4c9a-973f-0266a6a4930a" />
+
+//* #include <glad/glad.h>
+#include <GLFW/glfw3.h>
+#include <iostream>
+
+const unsigned int SCR_WIDTH = 800;
+const unsigned int SCR_HEIGHT = 600;
+
+GLuint VAO, VBO;
+GLuint shaderProg;
+
+GLuint buildShaderProgram(const char* vertexSrc, const char* fragmentSrc) {
+    GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vertexShader, 1, &vertexSrc, NULL);
+    glCompileShader(vertexShader);
+
+    GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fragmentShader, 1, &fragmentSrc, NULL);
+    glCompileShader(fragmentShader);
+
+    GLuint program = glCreateProgram();
+    glAttachShader(program, vertexShader);
+    glAttachShader(program, fragmentShader);
+    glLinkProgram(program);
+
+    glDeleteShader(vertexShader);
+    glDeleteShader(fragmentShader);
+
+    return program;
+}
+
+void setupTriangle() {
+    float vertices[] = {
+        -0.5f, -0.5f, 0.0f,
+         0.5f, -0.5f, 0.0f,
+         0.0f,  0.5f, 0.0f
+    };
+
+    glGenVertexArrays(1, &VAO);
+    glGenBuffers(1, &VBO);
+
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0);
+}
+
+int main() {
+    glfwInit();
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+    GLFWwindow* mainWindow = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "Interactive Triangle", NULL, NULL);
+    glfwMakeContextCurrent(mainWindow);
+
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+        return -1;
+    }
+
+    const char* vertexShaderSrc = R"(
+        #version 460 core
+        layout(location = 0) in vec3 aPos;
+        uniform vec2 offset;
+        void main() {
+            vec3 newPos = aPos;
+            newPos.x += offset.x;
+            newPos.y += offset.y;
+            gl_Position = vec4(newPos, 1.0);
+        }
+    )";
+
+    const char* fragmentShaderSrc = R"(
+        #version 460 core
+        out vec4 FragColor;
+        uniform vec4 ourColor;
+        void main() {
+            FragColor = ourColor;
+        }
+    )";
+
+    shaderProg = buildShaderProgram(vertexShaderSrc, fragmentShaderSrc);
+    setupTriangle();
+
+    glUseProgram(shaderProg);
+    int offsetLocation = glGetUniformLocation(shaderProg, "offset");
+    int colorLocation = glGetUniformLocation(shaderProg, "ourColor");
+
+    while (!glfwWindowShouldClose(mainWindow)) {
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
+
+        double xpos, ypos;
+        glfwGetCursorPos(mainWindow, &xpos, &ypos);
+
+        float x = (float)xpos / (float)SCR_WIDTH;
+        if (x < 0) x = 0;
+        if (x > 1) x = 1;
+
+        float y = (float)ypos / (float)SCR_HEIGHT;
+        if (y < 0) y = 0;
+        if (y > 1) y = 1;
+
+        glUniform4f(colorLocation, x, y, 0.0f, 1.0f);
+        glUniform2f(offsetLocation, x * 2 - 1, 1 - y * 2);
+
+        glBindVertexArray(VAO);
+        glDrawArrays(GL_TRIANGLES, 0, 3);
+
+        glfwSwapBuffers(mainWindow);
+        glfwPollEvents();
+    }
+
+    glDeleteVertexArrays(1, &VAO);
+    glDeleteBuffers(1, &VBO);
+    glDeleteProgram(shaderProg);
+
+    glfwDestroyWindow(mainWindow);
+    glfwTerminate();
+    return 0;
+}*//
+
+<img width="1082" height="878" alt="image" src="https://github.com/user-attachments/assets/88703653-9d35-4a26-b439-97e29cd85f4d" />
+
+
+Fase 2 --------------
+
+<img width="1838" height="965" alt="image" src="https://github.com/user-attachments/assets/26297acb-e5b6-4627-a9bc-a2bf5bc563ae" />
+
+Evidencia 1 — Contexto y carga de OpenGL
+Punto de inspección: En mi código, primero aparece la inicialización de GLFW y después la carga de GLAD.
+
+Explicación: GLFW es la biblioteca que abre la ventana y crea el contexto de OpenGL. Ese contexto es como el “taller” donde la GPU va a trabajar. GLAD, por su parte, es el cargador de funciones modernas de OpenGL: necesita que el taller ya esté abierto para saber qué herramientas están disponibles. Si intentara cargar GLAD antes de GLFW, fallaría porque no tendría un contexto válido.
+
+Justificación: Es como encender primero la sala de trabajo (GLFW) antes de traer las herramientas (GLAD). Esta secuencia asegura que mi aplicación pueda usar las funciones modernas de OpenGL sin errores.
+
+Evidencia 2 — Del arreglo al shader
+Punto de inspección: El arreglo vertices[] que definí en C++ termina alimentando el atributo aPos del vertex shader.
+
+Explicación: El flujo es claro:
+
+Defino el arreglo con las coordenadas del triángulo.
+
+Lo envío a la GPU con glBufferData, dentro del VBO.
+
+Configuro cómo leer esos datos con glVertexAttribPointer.
+
+El VAO guarda esa configuración.
+
+Finalmente, el vertex shader recibe cada vértice en la variable aPos.
+
+Justificación: Puedo comprobarlo con el depurador o incluso imprimiendo valores dentro del shader. Cada número que escribí en el arreglo termina siendo la posición que el shader usa para calcular gl_Position. Esto demuestra que el pipeline conecta directamente el arreglo en C++ con la ejecución en la GPU.
+
+Evidencia 3 — Uniform y cambio visual
+Punto de inspección: El triángulo cambia de color y posición sin que yo modifique el VBO.
+
+Explicación: Los uniforms (ourColor y offset) son variables globales en el shader. Yo las actualizo desde C++ en cada frame con glUniform4f y glUniform2f. El VBO sigue intacto, con los mismos vértices, pero el resultado visual cambia porque el shader aplica los nuevos valores de uniform.
+
+Justificación: Esto demuestra que no siempre necesito alterar los datos de vértice para lograr un cambio visual. Los uniforms permiten modificar la apariencia o la posición de manera eficiente, porque son independientes de los atributos de vértice.
+
+Evidencia 4 — Prueba de borde
+Prueba: Decidí enviar un offset fuera del rango esperado: glUniform2f(offsetLocation, 5.0, 5.0).
+
+Esperaba: Que el triángulo se saliera de la ventana y dejara de ser visible.
+
+Resultado: El triángulo efectivamente desapareció de la zona visible.
+
+Conclusión: El pipeline respeta las coordenadas NDC, que van de -1 a 1. Cuando envío valores fuera de ese rango, el objeto se recorta automáticamente. Esto confirma que OpenGL aplica clipping sin que yo tenga que programarlo explícitamente. Es una evidencia clara de cómo el pipeline protege la coherencia visual.
+
+Evidencia 5 — Responsabilidad del pipeline
+Decisión técnica: Elegí enviar el color como uniform y no como atributo de vértice.
+
+Explicación: El color depende de la posición del mouse, que es un valor global para todo el triángulo. No tiene sentido repetirlo en cada vértice. Si lo pusiera como atributo, tendría que recalcular y actualizar el VBO en cada frame, lo cual sería ineficiente.
+
+Justificación: Con un uniform, basta con actualizar una variable global en cada iteración del loop. El shader aplica ese color a todos los fragmentos del triángulo. Esta decisión técnica muestra cómo el pipeline distribuye responsabilidades: los atributos describen cada vértice, mientras que los uniforms controlan valores globales que afectan a toda la figura
 
 

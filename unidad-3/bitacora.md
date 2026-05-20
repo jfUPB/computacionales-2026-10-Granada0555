@@ -1,9 +1,31 @@
+Nota del profesor: no hay evidencias de la fase de aplicación
+
 # Unidad 3
 
-## Bitácora de proceso de aprendizaje
+
+//------------------------------------------------------------------------------------------------------------------
+
+Actividad 01
+
+<img width="1919" height="1133" alt="image" src="https://github.com/user-attachments/assets/7446fe0b-cc3c-4e22-9178-660025ea3a54" />
 
 
-## Bitácora de aplicación 
+
+//------------------------------------------------------------------------------------------------------------------
+
+Actividad 02
+
+<img width="1910" height="1093" alt="image" src="https://github.com/user-attachments/assets/af0ef0be-4a6a-4aee-aedd-c743c7260c67" />
 
 
-## Bitácora de reflexión
+
+
+//------------------------------------------------------------------------------------------------------------------
+
+Actividad 03
+
+
+
+
+//--------------------------------------------------------------------------------------------------------------------
+
